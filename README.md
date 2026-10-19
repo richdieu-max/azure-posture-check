@@ -31,18 +31,7 @@ The full list, with the reasoning and control mapping for each check, is in [doc
 
 ## How a run works
 
-```mermaid
-flowchart LR
-    A[Connect-AzAccount<br/>Reader role] --> B[Resolve scope<br/>subscription + RG prefix]
-    B --> C{Run each check<br/>in isolation}
-    C -->|ok| D[PASS / WARN / FAIL<br/>+ NIST controls]
-    C -->|error or missing module| E[WARN line,<br/>run continues]
-    D --> F[Console table<br/>+ one-line verdict]
-    E --> F
-    F --> G[evidence/posture-&lt;UTC&gt;/<br/>report.md · findings.json]
-    G --> H[MANIFEST.json<br/>SHA-256 per file]
-    H --> I[Exit code for CI<br/>-FailOn None | Fail | Warn]
-```
+![Script runs with Reader role, checks seven areas of the subscription, writes a hashed evidence folder and returns an exit code for CI](docs/diagrams/azure-posture-check-flow.svg)
 
 ## Quick start
 
