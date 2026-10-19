@@ -1,0 +1,4 @@
+# Evidence from real runs can name real resources. Keep it out of the repo.
+evidence/
+*.log
+.DS_Store

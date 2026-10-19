@@ -1,0 +1,175 @@
+{
+  "run": "20261019-144159Z",
+  "tool": "1.0.0",
+  "subscription": "00000000-0000-0000-0000-000000000000",
+  "scope": "resource groups app-prd-*",
+  "operator": "reader@contoso.example",
+  "summary": {
+    "Verdict": "ATTENTION NEEDED",
+    "Pass": 11,
+    "Warn": 4,
+    "Fail": 4
+  },
+  "findings": [
+    {
+      "Area": "Identity",
+      "Check": "Guest with standing Owner",
+      "Status": "FAIL",
+      "Resource": "",
+      "Detail": "guest Owner: Vendor Engineer",
+      "Controls": "AC-2, AC-6(5)"
+    },
+    {
+      "Area": "Identity",
+      "Check": "Standing Owner (subscription)",
+      "Status": "WARN",
+      "Resource": "",
+      "Detail": "2 user account(s) hold standing Owner: confirm each is intended",
+      "Controls": "AC-6(5)"
+    },
+    {
+      "Area": "Identity",
+      "Check": "Role assignments to individual users",
+      "Status": "PASS",
+      "Resource": "",
+      "Detail": "2 direct user assignments at subscription scope, 1 group assignments visible",
+      "Controls": "AC-2, AC-6"
+    },
+    {
+      "Area": "Governance",
+      "Check": "Guardrail policies (deny/modify)",
+      "Status": "PASS",
+      "Resource": "",
+      "Detail": "every in-scope resource meets the enforced guardrails",
+      "Controls": "CM-2, CM-6"
+    },
+    {
+      "Area": "Governance",
+      "Check": "Audit-only initiatives",
+      "Status": "INFO",
+      "Resource": "",
+      "Detail": "2 resource(s) with audit findings (benchmark scoring, not drift): cis-azure-foundations=1, nist-800-53-r5=1",
+      "Controls": "CA-7, RA-5"
+    },
+    {
+      "Area": "Governance",
+      "Check": "Delete locks",
+      "Status": "PASS",
+      "Resource": "",
+      "Detail": "2 resource group(s) locked",
+      "Controls": "CM-3"
+    },
+    {
+      "Area": "Network",
+      "Check": "NSG inbound from the internet",
+      "Status": "FAIL",
+      "Resource": "nsg-app/allow-rdp-temp",
+      "Detail": "management port(s) 3389 open to the internet",
+      "Controls": "SC-7, AC-17, CM-7"
+    },
+    {
+      "Area": "Network",
+      "Check": "Public IPs on VM NICs",
+      "Status": "PASS",
+      "Resource": "",
+      "Detail": "1 public IP(s), none attached to a VM NIC",
+      "Controls": "SC-7"
+    },
+    {
+      "Area": "Network",
+      "Check": "Network Watcher",
+      "Status": "WARN",
+      "Resource": "",
+      "Detail": "no Network Watcher (so no flow logs) in: westus3",
+      "Controls": "AU-12, SI-4"
+    },
+    {
+      "Area": "Secrets",
+      "Check": "Key Vault posture",
+      "Status": "PASS",
+      "Resource": "kv-app-prd-01",
+      "Detail": "RBAC, purge protection, public access Disabled, default action Deny",
+      "Controls": "SC-12, SC-28, AC-3, SC-7"
+    },
+    {
+      "Area": "Secrets",
+      "Check": "Key Vault audit logging",
+      "Status": "PASS",
+      "Resource": "kv-app-prd-01",
+      "Detail": "diagnostic setting: kv-to-law",
+      "Controls": "AU-2, AU-12"
+    },
+    {
+      "Area": "Storage",
+      "Check": "Storage account posture",
+      "Status": "WARN",
+      "Resource": "stappdata01",
+      "Detail": "shared key access on",
+      "Controls": "SC-8, SC-28, AC-3, SC-7"
+    },
+    {
+      "Area": "Compute",
+      "Check": "VM hardening",
+      "Status": "WARN",
+      "Resource": "vm-app-01",
+      "Detail": "periodic patch assessment off",
+      "Controls": "CM-6, SI-2, SC-28, IA-2"
+    },
+    {
+      "Area": "Backup",
+      "Check": "Vault resilience",
+      "Status": "PASS",
+      "Resource": "rsv-app-prd-01",
+      "Detail": "redundancy GeoRedundant, cross-region restore True, immutability Unlocked, soft delete AlwaysON",
+      "Controls": "CP-9, CP-6, CP-10"
+    },
+    {
+      "Area": "Backup",
+      "Check": "VM backup freshness",
+      "Status": "PASS",
+      "Resource": "vm-app-01",
+      "Detail": "last run Completed; latest recovery point 9 h ago",
+      "Controls": "CP-9, CP-10"
+    },
+    {
+      "Area": "Logging",
+      "Check": "Activity log export",
+      "Status": "PASS",
+      "Resource": "",
+      "Detail": "diagnostic setting: activity-to-law",
+      "Controls": "AU-2, AU-6, AU-12"
+    },
+    {
+      "Area": "Logging",
+      "Check": "Log Analytics retention",
+      "Status": "PASS",
+      "Resource": "law-app-prd-01",
+      "Detail": "365 days (minimum set to 90)",
+      "Controls": "AU-11"
+    },
+    {
+      "Area": "Threat protection",
+      "Check": "Defender for Cloud plans",
+      "Status": "FAIL",
+      "Resource": "",
+      "Detail": "not on: StorageAccounts",
+      "Controls": "SI-4, RA-5"
+    },
+    {
+      "Area": "Threat protection",
+      "Check": "Defender security contact",
+      "Status": "FAIL",
+      "Resource": "",
+      "Detail": "no security contact: Defender alerts reach nobody",
+      "Controls": "IR-6, SI-4"
+    },
+    {
+      "Area": "Alerting",
+      "Check": "Action groups and activity alerts",
+      "Status": "PASS",
+      "Resource": "",
+      "Detail": "1 action group(s), 1 email receiver(s), 8 enabled activity-log alert(s)",
+      "Controls": "SI-4, AU-6, IR-6"
+    }
+  ]
+}
