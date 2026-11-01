@@ -16,6 +16,11 @@ Describe 'Get-PropValue' {
     It 'reads hashtables' {
         Get-PropValue @{ Mode = 'Prevention' } 'Mode' | Should -Be 'Prevention'
     }
+    It 'skips empty strings and empty lists so the next name is tried' {
+        $o = [pscustomobject]@{ SourceAddressPrefix = ''; SourceAddressPrefixes = @('Internet') }
+        Get-PropValue $o 'SourceAddressPrefix', 'SourceAddressPrefixes' | Should -Be @('Internet')
+        Get-PropValue @{ Email = ''; Emails = @() } 'Email', 'Emails' | Should -BeNullOrEmpty
+    }
 }
 
 Describe 'Get-ResourceLeaf' {
@@ -36,9 +41,60 @@ Describe 'Test-PortInRange' {
         Test-PortInRange '443' 22 | Should -BeFalse
         Test-PortInRange '1000-2000' 3389 | Should -BeFalse
     }
+    It 'tolerates spaces and empty entries in a port list' {
+        Test-PortInRange '22, 3389' 3389 | Should -BeTrue
+        Test-PortInRange @('', '5985-5986') 5986 | Should -BeTrue
+        Test-PortInRange @() 22 | Should -BeFalse
+    }
+}
+
+Describe 'New-Finding' {
+    It 'joins control references into one cell' {
+        (New-Finding -Area A -Check c -Status PASS -Controls 'AC-2', 'AC-6(5)').Controls | Should -Be 'AC-2, AC-6(5)'
+    }
+    It 'refuses a status outside PASS, WARN, FAIL and INFO' {
+        { New-Finding -Area A -Check c -Status MAYBE } | Should -Throw
+    }
+}
+
+Describe 'Test-IsInternetSource' {
+    It 'recognises every spelling of "anyone on the internet"' {
+        '*', 'Internet', '0.0.0.0/0', '0.0.0.0', 'Any', '::/0' | ForEach-Object { Test-IsInternetSource $_ | Should -BeTrue }
+    }
+    It 'does not flag private ranges or service tags' {
+        '10.0.0.0/8', '192.0.2.0/24', 'VirtualNetwork', 'AzureLoadBalancer', 'GatewayManager' | ForEach-Object { Test-IsInternetSource $_ | Should -BeFalse }
+    }
+    It 'flags a prefix list if any entry is the internet' {
+        Test-IsInternetSource @('10.0.0.0/8', 'Internet') | Should -BeTrue
+        Test-IsInternetSource @('10.0.0.0/8', '172.16.0.0/12') | Should -BeFalse
+    }
 }
 
 Describe 'Get-NsgRuleExposure' {
+    It 'reads prefix and port lists, not only single values' {
+        $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefixes = @('10.0.0.0/8', 'Internet'); DestinationPortRanges = @('80', '3389') }
+        $x = Get-NsgRuleExposure -Rule $r
+        $x.Status | Should -Be 'FAIL'
+        $x.ManagementPorts | Should -Contain 3389
+        $x.Ports | Should -Be '80,3389'
+    }
+    It 'reads the list fields when the single-value fields are empty strings (REST shape)' {
+        $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = ''; SourceAddressPrefixes = @('Internet'); DestinationPortRange = ''; DestinationPortRanges = @('3389') }
+        (Get-NsgRuleExposure -Rule $r).Status | Should -Be 'FAIL'
+    }
+    It 'fails a port range that covers a management port' {
+        $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = '0.0.0.0/0'; DestinationPortRange = '3000-4000' }
+        (Get-NsgRuleExposure -Rule $r).Status | Should -Be 'FAIL'
+    }
+    It 'treats an IPv6 any-source the same as IPv4' {
+        $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = '::/0'; DestinationPortRange = '22' }
+        (Get-NsgRuleExposure -Rule $r).Status | Should -Be 'FAIL'
+    }
+    It 'uses the caller-supplied management port list' {
+        $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = 'Internet'; DestinationPortRange = '1433' }
+        (Get-NsgRuleExposure -Rule $r).Status | Should -Be 'WARN'
+        (Get-NsgRuleExposure -Rule $r -ManagementPorts 1433).Status | Should -Be 'FAIL'
+    }
     It 'fails an internet allow on a management port' {
         $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = 'Internet'; DestinationPortRange = '3389' }
         (Get-NsgRuleExposure -Rule $r).Status | Should -Be 'FAIL'
@@ -69,6 +125,9 @@ Describe 'Get-AgeHours' {
         Get-AgeHours ([datetime]'2026-01-02T02:30:00Z') -Now $now | Should -Be 9
     }
     It 'returns null for no timestamp' { Get-AgeHours $null | Should -BeNullOrEmpty }
+    It 'accepts a timestamp given as text, as Az objects often return it' {
+        Get-AgeHours '2026-01-02T02:30:00Z' -Now ([datetime]'2026-01-02T12:00:00Z') | Should -Be 9
+    }
 }
 
 Describe 'Test-IsGuestPrincipal' {
@@ -95,6 +154,16 @@ Describe 'Verdict and exit code' {
         Get-PostureExitCode -Findings @($warn) -FailOn Warn | Should -Be 1
         Get-PostureExitCode -Findings @($fail) -FailOn Fail | Should -Be 1
     }
+    It 'treats an empty run as all good and exits 0 under every policy' {
+        $v = Get-PostureVerdict -Findings @()
+        $v.Verdict | Should -Be 'ALL GOOD'
+        $v.Pass + $v.Warn + $v.Fail | Should -Be 0
+        Get-PostureExitCode -Findings @() -FailOn Warn | Should -Be 0
+    }
+    It 'does not count INFO rows in the verdict' {
+        $info = New-Finding -Area A -Check c4 -Status INFO
+        (Get-PostureVerdict -Findings @($pass, $info)).Verdict | Should -Be 'ALL GOOD'
+    }
 }
 
 Describe 'ConvertTo-PostureMarkdown' {
@@ -109,6 +178,11 @@ Describe 'ConvertTo-PostureMarkdown' {
         $md | Should -Match 'a\\\|b'
         $md | Should -Match 'ATTENTION NEEDED'
     }
+    It 'keeps every finding on one table row even when the detail has line breaks' {
+        $f = @(New-Finding -Area Backup -Check 'Vault' -Status WARN -Detail "first line`nsecond line")
+        $md = ConvertTo-PostureMarkdown -Findings $f -Context @{ Run = 'r'; Subscription = 's'; Scope = 'all'; Version = '1.0.0' }
+        $md | Should -Match '\| WARN \| Vault \|  \| first line second line \|'
+    }
 }
 
 Describe 'Write-EvidenceManifest' {
@@ -120,6 +194,18 @@ Describe 'Write-EvidenceManifest' {
         $m = Get-Content $path -Raw | ConvertFrom-Json
         $m.files.Count | Should -Be 1
         $m.files[0].sha256 | Should -Be (Get-FileHash (Join-Path $dir 'report.md') -Algorithm SHA256).Hash
+        Remove-Item $dir -Recurse -Force
+    }
+    It 'never hashes itself, so a second run gives the same file list' {
+        $dir = Join-Path ([System.IO.Path]::GetTempPath()) ([guid]::NewGuid())
+        New-Item -ItemType Directory -Path $dir | Out-Null
+        Set-Content -Path (Join-Path $dir 'findings.json') -Value '{}'
+        $null = Write-EvidenceManifest -Folder $dir -Context @{ Version = '1.0.0'; Operator = 'tester' }
+        $path = Write-EvidenceManifest -Folder $dir -Context @{ Version = '1.0.0'; Operator = 'tester' }
+        $m = Get-Content $path -Raw | ConvertFrom-Json
+        $m.files.Count | Should -Be 1
+        $m.files[0].name | Should -Be 'findings.json'
+        $m.tool | Should -Be 'Invoke-AzurePostureCheck v1.0.0'
         Remove-Item $dir -Recurse -Force
     }
 }
