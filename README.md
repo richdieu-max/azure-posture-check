@@ -91,7 +91,7 @@ evidence/posture-20261019-144151Z/
 
 ## Design choices
 
-- **Read-only by construction.** No `Set-`, `New-`, `Remove-` or `Update-` calls on Azure. Safe to hand to an auditor with Reader.
+- **Read-only by construction.** No `Set-`, `New-`, `Remove-` or `Update-` calls on Azure. The only two exceptions by name are local: `Set-AzContext` selects the subscription in the current PowerShell session, and `New-Item` creates the evidence folder on disk. Neither sends a write to Azure. Safe to hand to an auditor with Reader.
 - **One failure never stops the run.** Each check is wrapped on its own; a permission gap becomes a WARN line for that check.
 - **Tolerant of Az module drift.** Properties are read through `Get-PropValue`, which tries several names and returns `$null` instead of throwing.
 - **Evidence, not screenshots.** The manifest hashes let a reviewer confirm the report was not edited after the run.
