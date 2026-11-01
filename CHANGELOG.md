@@ -4,6 +4,7 @@
 
 - README: name the two local-only `Set-`/`New-` calls (`Set-AzContext`, `New-Item`) so the read-only claim is precise.
 - CI: reuse the Pester and PSScriptAnalyzer modules already on the GitHub runner instead of reinstalling them on every run.
+- Tests: cover `Test-IsInternetSource` directly (IPv4, IPv6 and service tags), prefix and port lists on NSG rules, port ranges that cover a management port, caller-supplied management ports, INFO rows and empty runs in the verdict, line breaks in report details, and manifest idempotence.
 
 ## 1.0.0 (2026-10-19)
 
