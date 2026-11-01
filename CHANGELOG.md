@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- README: name the two local-only `Set-`/`New-` calls (`Set-AzContext`, `New-Item`) so the read-only claim is precise.
+- CI: reuse the Pester and PSScriptAnalyzer modules already on the GitHub runner instead of reinstalling them on every run.
+
 ## 1.0.0 (2026-10-19)
 
 First public release.

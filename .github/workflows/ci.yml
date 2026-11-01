@@ -14,12 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Pester and PSScriptAnalyzer
+      - name: Install Pester and PSScriptAnalyzer (only if the runner lacks them)
         shell: pwsh
         run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module Pester -MinimumVersion 5.5.0 -Force
-          Install-Module PSScriptAnalyzer -Force
+          $havePester   = Get-Module -ListAvailable Pester | Where-Object Version -ge '5.5.0'
+          $haveAnalyzer = Get-Module -ListAvailable PSScriptAnalyzer
+          if (-not $havePester -or -not $haveAnalyzer) {
+            Set-PSRepository PSGallery -InstallationPolicy Trusted
+            if (-not $havePester)   { Install-Module Pester -MinimumVersion 5.5.0 -Force }
+            if (-not $haveAnalyzer) { Install-Module PSScriptAnalyzer -Force }
+          }
+          Get-Module -ListAvailable Pester, PSScriptAnalyzer | Select-Object Name, Version | Format-Table -AutoSize
 
       - name: Lint
         shell: pwsh
