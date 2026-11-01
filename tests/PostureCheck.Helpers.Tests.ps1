@@ -16,6 +16,11 @@ Describe 'Get-PropValue' {
     It 'reads hashtables' {
         Get-PropValue @{ Mode = 'Prevention' } 'Mode' | Should -Be 'Prevention'
     }
+    It 'skips empty strings and empty lists so the next name is tried' {
+        $o = [pscustomobject]@{ SourceAddressPrefix = ''; SourceAddressPrefixes = @('Internet') }
+        Get-PropValue $o 'SourceAddressPrefix', 'SourceAddressPrefixes' | Should -Be @('Internet')
+        Get-PropValue @{ Email = ''; Emails = @() } 'Email', 'Emails' | Should -BeNullOrEmpty
+    }
 }
 
 Describe 'Get-ResourceLeaf' {
@@ -72,6 +77,10 @@ Describe 'Get-NsgRuleExposure' {
         $x.Status | Should -Be 'FAIL'
         $x.ManagementPorts | Should -Contain 3389
         $x.Ports | Should -Be '80,3389'
+    }
+    It 'reads the list fields when the single-value fields are empty strings (REST shape)' {
+        $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = ''; SourceAddressPrefixes = @('Internet'); DestinationPortRange = ''; DestinationPortRanges = @('3389') }
+        (Get-NsgRuleExposure -Rule $r).Status | Should -Be 'FAIL'
     }
     It 'fails a port range that covers a management port' {
         $r = [pscustomobject]@{ Direction = 'Inbound'; Access = 'Allow'; SourceAddressPrefix = '0.0.0.0/0'; DestinationPortRange = '3000-4000' }

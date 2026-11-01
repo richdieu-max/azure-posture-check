@@ -18,13 +18,23 @@ function Get-PropValue {
     if ($null -eq $InputObject) { return $null }
     foreach ($n in $Name) {
         if ($InputObject -is [System.Collections.IDictionary]) {
-            if ($InputObject.Contains($n) -and $null -ne $InputObject[$n]) { return $InputObject[$n] }
+            if ($InputObject.Contains($n) -and (Test-HasValue $InputObject[$n])) { return $InputObject[$n] }
             continue
         }
         $p = $InputObject.PSObject.Properties[$n]
-        if ($p -and $null -ne $p.Value) { return $p.Value }
+        if ($p -and (Test-HasValue $p.Value)) { return $p.Value }
     }
     return $null
+}
+
+# An empty string or an empty collection counts as "no value", so a REST-shaped rule whose
+# SourceAddressPrefix is "" falls through to SourceAddressPrefixes instead of hiding it.
+function Test-HasValue {
+    param($Value)
+    if ($null -eq $Value) { return $false }
+    if ($Value -is [string]) { return $Value -ne '' }
+    if ($Value -is [System.Collections.ICollection]) { return $Value.Count -gt 0 }
+    return $true
 }
 
 # Last segment of an Azure resource ID.
@@ -96,7 +106,7 @@ function Test-IsInternetSource {
 function Test-PortInRange {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory, Position = 0)] [AllowEmptyCollection()] [string[]] $PortRange,
+        [Parameter(Mandatory, Position = 0)] [AllowEmptyCollection()] [AllowEmptyString()] [string[]] $PortRange,
         [Parameter(Mandatory, Position = 1)] [int] $Port
     )
     foreach ($entry in @($PortRange)) {
