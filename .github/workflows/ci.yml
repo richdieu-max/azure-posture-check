@@ -41,3 +41,15 @@ jobs:
           $cfg.Run.Exit = $true
           $cfg.Output.Verbosity = 'Detailed'
           Invoke-Pester -Configuration $cfg
+
+      - name: Tenant hardening skeleton (parse and dry run)
+        shell: pwsh
+        run: |
+          $path = './tenant-hardening/Get-TenantHardeningReport.skeleton.ps1'
+          $tokens = $null; $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path), [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors) { $errors | Format-List; throw "$($errors.Count) parse error(s)" }
+          & $path -TenantId '00000000-0000-0000-0000-000000000000' -SkipAzure -SkipGraph -OutputPath ./out
+          $files = @(Get-ChildItem ./out -File)
+          $files | Select-Object Name, Length | Format-Table -AutoSize
+          if ($files.Count -ne 4) { throw "Expected 4 output files, found $($files.Count)" }

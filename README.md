@@ -8,6 +8,10 @@ A read-only security posture check for an Azure subscription. One command walks 
 
 I wrote the first version of this during an Azure tenant build to answer one question quickly and repeatably: *is everything we built still the way we built it?* This repository is the general-purpose rewrite. Every name, ID and threshold is a parameter; nothing is tied to one tenant.
 
+## Also in this repository
+
+**[Tenant Hardening Assessment](tenant-hardening/)** is the tenant-wide companion to this check. It is a read-only assessment of Microsoft 365, Entra ID and Azure together, with a 37-page SOP (SOP-SEC-TA-01) and a runnable skeleton of the script behind it. It reads 17 data sources, merges duplicate findings from Defender and custom checks into one row each, maps every finding to seven frameworks, and writes a hashed evidence set.
+
 ## Why it exists
 
 Azure Policy and Defender for Cloud score a subscription against benchmarks, but their numbers mix two different things: **guardrails you enforce** (deny, modify) and **benchmarks you audit against**. A low benchmark score can hide one real drift problem under dozens of expected findings. This tool separates the two, checks the settings that matter most in a hardened build, and turns the result into evidence instead of a screenshot.
@@ -105,6 +109,7 @@ src/PostureCheck.Helpers.psm1        pure helpers (classification, verdict, repo
 tests/PostureCheck.Helpers.Tests.ps1 Pester 5 tests for every helper
 docs/checks.md                       each check, why it matters, control mapping
 examples/                            report from a fictional subscription
+tenant-hardening/                    tenant-wide assessment: SOP-SEC-TA-01 and script skeleton
 .github/workflows/ci.yml             PSScriptAnalyzer + Pester on every push
 ```
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added `tenant-hardening/`: SOP-SEC-TA-01, Tenant Hardening Assessment (concept edition), and `Get-TenantHardeningReport.skeleton.ps1`, a runnable skeleton of the tenant-wide assessment script.
+- CI: parse-check the skeleton and dry-run it with `-SkipAzure -SkipGraph`, so the merge, score and write stages are exercised on every push.
 - README: name the two local-only `Set-`/`New-` calls (`Set-AzContext`, `New-Item`) so the read-only claim is precise.
 - CI: reuse the Pester and PSScriptAnalyzer modules already on the GitHub runner instead of reinstalling them on every run.
 - Fixed: a rule object whose single-value `SourceAddressPrefix` or `DestinationPortRange` is an empty string (the REST shape, with the values in the `...Prefixes` / `...Ranges` lists) was ignored or made the NSG check report WARN; `Get-PropValue` now treats empty strings and empty lists as absent and reads the list field, and `Test-PortInRange` tolerates empty entries.
