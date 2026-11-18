@@ -1,0 +1,19 @@
+{
+  "_note": "FICTIONAL Secure Score data for a fictional subscription. Points are illustrative.",
+  "currentScore": 19.0,
+  "maxScore": 50.0,
+  "recommendations": [
+    { "name": "Microsoft Defender for Servers should be enabled", "points": 3.0, "unhealthyResources": 1 },
+    { "name": "Email notification for high severity alerts should be enabled", "points": 1.0, "unhealthyResources": 1 },
+    { "name": "Machines should be configured to periodically check for missing system updates", "points": 2.0, "unhealthyResources": 1 },
+    { "name": "Guest Configuration extension should be installed on machines", "points": 1.5, "unhealthyResources": 1 },
+    { "name": "Log Analytics agent health issues should be resolved", "points": 0.5, "unhealthyResources": 1 },
+    { "name": "Storage accounts should restrict network access using virtual network rules", "points": 2.0, "unhealthyResources": 2, "fixId": "FX-N03" },
+    { "name": "Storage account public network access should be disabled", "points": 1.5, "unhealthyResources": 2, "fixId": "FX-N03" },
+    { "name": "Accounts with owner permissions on Azure resources should be MFA enabled", "points": 3.0, "unhealthyResources": 1 },
+    { "name": "Guest accounts with owner permissions on Azure resources should be removed", "points": 2.5, "unhealthyResources": 1 },
+    { "name": "Internet-facing virtual machines should be protected with network security groups", "points": 2.0, "unhealthyResources": 1 },
+    { "name": "Azure Key Vaults should use private link", "points": 0.5, "unhealthyResources": 1 },
+    { "name": "Diagnostic logs in Key Vault should be enabled", "points": 0.5, "unhealthyResources": 1 }
+  ]
+}

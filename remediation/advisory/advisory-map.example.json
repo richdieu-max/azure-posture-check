@@ -1,0 +1,51 @@
+{
+  "_note": "FICTIONAL advisory, mapped with the method in README.md. Technique IDs are MITRE ATT&CK (public).",
+  "advisory": {
+    "id": "EXAMPLE-ADV-001",
+    "title": "Example advisory: cloud tenant takeover through stolen sessions and new app credentials",
+    "received": "YYYY-MM-DD",
+    "scope": "Infrastructure only. Application code changes are routed to the application team."
+  },
+  "mappings": [
+    {
+      "technique": "T1078.004", "name": "Valid Accounts: Cloud Accounts",
+      "controls": ["800-53 AC-2", "800-53 IA-2(1)"],
+      "check": "R-ID-04 (rule register), azure-posture-check Identity",
+      "fix": "FX-I01",
+      "workloadImpact": "None if the build account is moved to a group first",
+      "decision": "Apply"
+    },
+    {
+      "technique": "T1098.001", "name": "Account Manipulation: Additional Cloud Credentials",
+      "controls": ["800-53 AC-2(4)", "800-53 AU-6"],
+      "check": "KQL: app-credential-added.kql",
+      "fix": "FX-A01",
+      "workloadImpact": "None (detect only)",
+      "decision": "Apply"
+    },
+    {
+      "technique": "T1190", "name": "Exploit Public-Facing Application",
+      "controls": ["800-53 SC-7", "800-53 SI-4"],
+      "check": "R-NW-01, R-NW-02, WAF mode",
+      "fix": "FX-N01",
+      "workloadImpact": "Medium: confirm webhook Allow rules before Prevention",
+      "decision": "Apply after Detection-log review"
+    },
+    {
+      "technique": "T1567", "name": "Exfiltration Over Web Service",
+      "controls": ["800-53 SC-7(5)"],
+      "check": "FX-N02 test (outbound 443 to any host)",
+      "fix": "FX-N02",
+      "workloadImpact": "High: needs the complete outbound allow-list",
+      "decision": "Plan with workload owner"
+    },
+    {
+      "technique": "T1485", "name": "Data Destruction",
+      "controls": ["800-53 CP-9", "800-53 CP-10"],
+      "check": "R-BK-01, R-KV-01",
+      "fix": "none: already met by immutable backup and purge protection",
+      "workloadImpact": "None",
+      "decision": "Already met (record evidence)"
+    }
+  ]
+}

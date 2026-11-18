@@ -1,0 +1,71 @@
+{
+  "register": "Example governance rule register (fictional build)",
+  "version": "1.0",
+  "rules": [
+    {
+      "id": "R-ID-01", "title": "Only admins and guest inviters can invite guests", "scope": "Entra", "severity": "High",
+      "check": { "type": "setting", "path": "entra.guestInviteRestriction", "operator": "in", "value": ["adminsAndGuestInviters", "none"] },
+      "frameworks": ["800-53 AC-2", "CSF PR.AA-01"]
+    },
+    {
+      "id": "R-ID-02", "title": "Users cannot consent to applications", "scope": "Entra", "severity": "High",
+      "check": { "type": "setting", "path": "entra.userConsentToApps", "operator": "eq", "value": "disabled" },
+      "frameworks": ["800-53 AC-6", "CSF PR.AA-05"]
+    },
+    {
+      "id": "R-ID-03", "title": "At least two break-glass accounts exist", "scope": "Entra", "severity": "Medium",
+      "check": { "type": "setting", "path": "entra.breakGlassAccountCount", "operator": "gte", "value": 2 },
+      "frameworks": ["800-53 CP-2", "CSF PR.AA-05"]
+    },
+    {
+      "id": "R-ID-04", "title": "No user holds standing Owner on the subscription", "scope": "Azure", "severity": "High",
+      "check": { "type": "resourceCount", "resourceType": "roleAssignment", "where": { "path": "role", "operator": "eq", "value": "Owner" }, "max": 0 },
+      "frameworks": ["800-53 AC-6(1)", "CSF PR.AA-05"]
+    },
+    {
+      "id": "R-KV-01", "title": "Key Vaults have purge protection", "scope": "Azure", "severity": "High",
+      "check": { "type": "resource", "resourceType": "microsoft.keyvault/vaults", "path": "properties.enablePurgeProtection", "operator": "eq", "value": true },
+      "frameworks": ["800-53 CP-9", "800-53 SC-12"]
+    },
+    {
+      "id": "R-KV-02", "title": "Key Vaults are not reachable from public networks", "scope": "Azure", "severity": "High",
+      "check": { "type": "resource", "resourceType": "microsoft.keyvault/vaults", "path": "properties.publicNetworkAccess", "operator": "eq", "value": "Disabled" },
+      "frameworks": ["800-53 SC-7", "CSF PR.IR-01"]
+    },
+    {
+      "id": "R-ST-01", "title": "Storage accounts require TLS 1.2", "scope": "Azure", "severity": "Medium",
+      "check": { "type": "resource", "resourceType": "microsoft.storage/storageaccounts", "path": "properties.minimumTlsVersion", "operator": "eq", "value": "TLS1_2" },
+      "frameworks": ["800-53 SC-8", "CSF PR.DS-02"]
+    },
+    {
+      "id": "R-ST-02", "title": "No anonymous blob access", "scope": "Azure", "severity": "High",
+      "check": { "type": "resource", "resourceType": "microsoft.storage/storageaccounts", "path": "properties.allowBlobPublicAccess", "operator": "eq", "value": false },
+      "frameworks": ["800-53 AC-3", "CSF PR.DS-01"]
+    },
+    {
+      "id": "R-VM-01", "title": "VMs use Trusted Launch", "scope": "Azure", "severity": "Medium",
+      "check": { "type": "resource", "resourceType": "microsoft.compute/virtualmachines", "path": "properties.securityProfile.securityType", "operator": "eq", "value": "TrustedLaunch" },
+      "frameworks": ["800-53 SI-7", "CSF PR.PS-01"]
+    },
+    {
+      "id": "R-NW-01", "title": "No NIC has a public IP", "scope": "Azure", "severity": "High",
+      "check": { "type": "resource", "resourceType": "microsoft.network/networkinterfaces", "path": "properties.ipConfigurations.0.properties.publicIPAddress", "operator": "notexists" },
+      "frameworks": ["800-53 SC-7", "CSF PR.IR-01"]
+    },
+    {
+      "id": "R-NW-02", "title": "Public IPs limited to the designed two (NAT and gateway)", "scope": "Azure", "severity": "Medium",
+      "check": { "type": "resourceCount", "resourceType": "microsoft.network/publicipaddresses", "max": 2 },
+      "frameworks": ["800-53 SC-7", "800-53 CM-7"]
+    },
+    {
+      "id": "R-BK-01", "title": "Recovery vaults have immutability enabled", "scope": "Azure", "severity": "Medium",
+      "check": { "type": "resource", "resourceType": "microsoft.recoveryservices/vaults", "path": "properties.securitySettings.immutabilitySettings.state", "operator": "in", "value": ["Unlocked", "Locked"] },
+      "frameworks": ["800-53 CP-9", "CSF PR.DS-11"]
+    },
+    {
+      "id": "R-LG-01", "title": "Activity log is exported to the workspace", "scope": "Azure", "severity": "High",
+      "check": { "type": "setting", "path": "azure.activityLogExported", "operator": "eq", "value": true },
+      "frameworks": ["800-53 AU-6", "CSF DE.CM-01"]
+    }
+  ]
+}

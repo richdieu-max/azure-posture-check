@@ -1,0 +1,24 @@
+{
+  "_note": "FICTIONAL state for a fictional subscription, used by CI to grade the example register offline.",
+  "settings": {
+    "entra": {
+      "guestInviteRestriction": "everyone",
+      "userConsentToApps": "disabled",
+      "breakGlassAccountCount": 2
+    },
+    "azure": {
+      "activityLogExported": true
+    }
+  },
+  "resources": [
+    { "name": "Platform engineers group", "type": "roleAssignment", "role": "Contributor" },
+    { "name": "Build account", "type": "roleAssignment", "role": "Owner" },
+    { "name": "contoso-c001-prd-kv", "type": "Microsoft.KeyVault/vaults", "properties": { "enablePurgeProtection": true, "publicNetworkAccess": "Disabled" } },
+    { "name": "contoso-c002-prd-kv", "type": "Microsoft.KeyVault/vaults", "properties": { "enablePurgeProtection": true, "publicNetworkAccess": "Enabled" } },
+    { "name": "contosoplatprdlogarch01", "type": "Microsoft.Storage/storageAccounts", "properties": { "minimumTlsVersion": "TLS1_2", "allowBlobPublicAccess": false } },
+    { "name": "contoso-c001-prd-eus2-vm-01", "type": "Microsoft.Compute/virtualMachines", "properties": { "securityProfile": { "securityType": "TrustedLaunch" } } },
+    { "name": "contoso-c001-prd-eus2-nic-01", "type": "Microsoft.Network/networkInterfaces", "properties": { "ipConfigurations": [ { "properties": { "privateIPAddress": "10.20.0.4" } } ] } },
+    { "name": "contoso-c001-prd-eus2-pip-nat-01", "type": "Microsoft.Network/publicIPAddresses", "properties": {} },
+    { "name": "contoso-c001-prd-eus2-rsv-01", "type": "Microsoft.RecoveryServices/vaults", "properties": { "securitySettings": { "immutabilitySettings": { "state": "Disabled" } } } }
+  ]
+}

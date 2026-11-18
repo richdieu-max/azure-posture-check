@@ -53,3 +53,61 @@ jobs:
           $files = @(Get-ChildItem ./out -File)
           $files | Select-Object Name, Length | Format-Table -AutoSize
           if ($files.Count -ne 4) { throw "Expected 4 output files, found $($files.Count)" }
+
+      - name: Rule register skeleton (parse and offline grade)
+        shell: pwsh
+        run: |
+          foreach ($p in './rule-register/Invoke-RuleRegisterCheck.skeleton.ps1', './rule-register/RuleRegister.psm1') {
+            $tokens = $null; $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $p), [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors) { $errors | Format-List; throw "$p : $($errors.Count) parse error(s)" }
+          }
+          ./rule-register/Invoke-RuleRegisterCheck.skeleton.ps1 -StateFile ./rule-register/examples/sample-state.json -OutputPath ./out-rr
+          $run = Get-ChildItem ./out-rr -Directory | Select-Object -First 1
+          $names = (Get-ChildItem $run.FullName -File | Sort-Object Name).Name -join ','
+          if ($names -ne 'MANIFEST.json,report.md,results.csv,results.json') { throw "Unexpected evidence files: $names" }
+          $j = Get-Content -Raw (Join-Path $run.FullName 'results.json') | ConvertFrom-Json
+          if ($j.summary.Pass -ne 9 -or $j.summary.Fail -ne 4) { throw "Expected 9 pass / 4 fail, got $($j.summary.Pass) / $($j.summary.Fail)" }
+
+      - name: Remediation skeleton (parse, report, WhatIf, demo apply)
+        shell: pwsh
+        run: |
+          foreach ($p in './remediation/Invoke-PhasedRemediation.skeleton.ps1', './remediation/fix-catalog.ps1', './remediation/Get-SecureScorePlan.skeleton.ps1') {
+            $tokens = $null; $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $p), [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors) { $errors | Format-List; throw "$p : $($errors.Count) parse error(s)" }
+          }
+          function Get-Rows($dir) {
+            $run = Get-ChildItem $dir -Directory | Sort-Object Name | Select-Object -Last 1
+            (Get-Content -Raw (Join-Path $run.FullName 'remediation.json') | ConvertFrom-Json).rows
+          }
+          function Assert-Status($rows, $id, $want) {
+            $got = ($rows | Where-Object Id -eq $id).Status
+            if ($got -ne $want) { throw "$id expected '$want', got '$got'" }
+          }
+
+          ./remediation/Invoke-PhasedRemediation.skeleton.ps1 -Demo -OutputPath ./out-rem-report
+          $r = Get-Rows ./out-rem-report
+          if (@($r).Count -ne 8) { throw "Report should test all 8 fixes, got $(@($r).Count)" }
+          Assert-Status $r 'FX-S01' 'Already met'
+          Assert-Status $r 'FX-S02' 'Needs fix'
+
+          ./remediation/Invoke-PhasedRemediation.skeleton.ps1 -Demo -Phase Safe -WhatIf -OutputPath ./out-rem-whatif
+          $r = Get-Rows ./out-rem-whatif
+          Assert-Status $r 'FX-S02' 'Would fix'
+          Assert-Status $r 'FX-S03' 'Would fix'
+
+          ./remediation/Invoke-PhasedRemediation.skeleton.ps1 -Demo -Phase Safe, Network -Confirm:$false -OutputPath ./out-rem-apply
+          $r = Get-Rows ./out-rem-apply
+          Assert-Status $r 'FX-S02' 'Fixed'
+          Assert-Status $r 'FX-N01' 'Fixed'
+          Assert-Status $r 'FX-N02' 'Needs manual change'
+          Assert-Status $r 'FX-N03' 'Excepted'
+
+          ./remediation/Get-SecureScorePlan.skeleton.ps1 -RecommendationsFile ./remediation/examples/secure-score-sample.json -OutputPath ./out-ss
+          $run = Get-ChildItem ./out-ss -Directory | Select-Object -First 1
+          $plan = Get-Content -Raw (Join-Path $run.FullName 'plan.json') | ConvertFrom-Json
+          $last = @($plan.projection)[-1]
+          if ($last.Percent -ne 70) { throw "Expected projected 70% after planned items, got $($last.Percent)" }
+          $accepted = @($plan.plan | Where-Object Quadrant -eq 'Accept').Count
+          if ($accepted -ne 3) { throw "Expected 3 accepted items (2 excepted, 1 low impact / high disruption), got $accepted" }

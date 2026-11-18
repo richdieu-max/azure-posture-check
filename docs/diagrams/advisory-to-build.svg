@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560" width="1280" height="560" role="img" aria-label="From advisory to build change: a translation, not a reaction">
+<title>From advisory to build change: a translation, not a reaction</title>
+<defs></defs>
+<rect x="0" y="0" width="1280" height="560" rx="0" fill="#0D1117" stroke="none" stroke-width="1.2"/>
+<rect x="0" y="0" width="1280" height="6" rx="0" fill="#1F6FEB" stroke="none" stroke-width="1.2"/>
+<text x="32" y="48" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#E6EDF3" text-anchor="start">From advisory to build change: a translation, not a reaction</text>
+<text x="32" y="74" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#9198A1" text-anchor="start">An advisory is read for behaviours, translated into controls, proved with checks, and only then turned into fixes.</text>
+<polygon points="50,185.0 228,200.0 228,400.0 50,415.0" fill="#161B22" stroke="#9198A1" stroke-width="1.6"/>
+<text x="139.0" y="296" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#9198A1" text-anchor="middle">Advisory</text>
+<text x="139.0" y="316" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#9198A1" text-anchor="middle">behaviours, not IPs</text>
+<polygon points="250,200.0 428,215.0 428,385.0 250,400.0" fill="#121D2F" stroke="#4493F8" stroke-width="1.6"/>
+<text x="339.0" y="296" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#4493F8" text-anchor="middle">Techniques</text>
+<text x="339.0" y="316" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#9198A1" text-anchor="middle">ATT&amp;CK IDs</text>
+<polygon points="450,215.0 628,230.0 628,370.0 450,385.0" fill="#1E1A2E" stroke="#AB7DF8" stroke-width="1.6"/>
+<text x="539.0" y="296" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#AB7DF8" text-anchor="middle">Controls</text>
+<text x="539.0" y="316" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#9198A1" text-anchor="middle">800-53 per technique</text>
+<polygon points="650,230.0 828,245.0 828,355.0 650,370.0" fill="#0F2426" stroke="#39C5CF" stroke-width="1.6"/>
+<text x="739.0" y="296" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#39C5CF" text-anchor="middle">Checks</text>
+<text x="739.0" y="316" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#9198A1" text-anchor="middle">register / posture / KQL</text>
+<polygon points="850,245.0 1028,260.0 1028,340.0 850,355.0" fill="#211D12" stroke="#D29922" stroke-width="1.6"/>
+<text x="939.0" y="296" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#D29922" text-anchor="middle">Fixes</text>
+<text x="939.0" y="316" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#9198A1" text-anchor="middle">phase Advisory</text>
+<polygon points="1050,260.0 1228,260.0 1228,340.0 1050,340.0" fill="#12261A" stroke="#3FB950" stroke-width="1.6"/>
+<text x="1139.0" y="296" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#3FB950" text-anchor="middle">Changes</text>
+<text x="1139.0" y="316" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#9198A1" text-anchor="middle">approved, verified</text>
+<text x="50" y="140" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="start" font-style="italic">wide: everything in the advisory</text>
+<text x="1230" y="140" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="end" font-style="italic">narrow: only what this build needs</text>
+<rect x="51.5" y="432" width="380" height="70" rx="6" fill="#000" stroke="none" stroke-width="1.2" opacity="0.25"/>
+<rect x="50" y="430" width="380" height="70" rx="6" fill="#1C2128" stroke="#3D444D" stroke-width="1"/>
+<rect x="50" y="430" width="4" height="70" rx="2" fill="#9198A1" stroke="none" stroke-width="1.2"/>
+<text x="64" y="452" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#9198A1" text-anchor="start">SOC</text>
+<text x="64" y="472" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="start">indicators (IPs, hashes) go here</text>
+<rect x="451.5" y="432" width="380" height="70" rx="6" fill="#000" stroke="none" stroke-width="1.2" opacity="0.25"/>
+<rect x="450" y="430" width="380" height="70" rx="6" fill="#1C2128" stroke="#3D444D" stroke-width="1"/>
+<rect x="450" y="430" width="4" height="70" rx="2" fill="#AB7DF8" stroke="none" stroke-width="1.2"/>
+<text x="464" y="452" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#AB7DF8" text-anchor="start">Application team</text>
+<text x="464" y="472" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="start">app-side items routed, not fixed quietly</text>
+<rect x="851.5" y="432" width="380" height="70" rx="6" fill="#000" stroke="none" stroke-width="1.2" opacity="0.25"/>
+<rect x="850" y="430" width="380" height="70" rx="6" fill="#1C2128" stroke="#3D444D" stroke-width="1"/>
+<rect x="850" y="430" width="4" height="70" rx="2" fill="#3FB950" stroke="none" stroke-width="1.2"/>
+<text x="864" y="452" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#3FB950" text-anchor="start">Evidence</text>
+<text x="864" y="472" font-family="'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="start">&#x27;already met&#x27; gets a check run and a hash too</text>
+</svg>

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added `rule-register/`: a skeleton grader that checks a tenant against governance rules written as JSON (resource, resource count and setting checks), with a pure-function module, Pester tests, an example register and a fictional sample state.
+- Added `remediation/`: a skeleton phased remediation engine (Report, Safe, Network, Identity, Advisory) with ShouldProcess on every change, before-and-after tests, an exceptions register, 'Manual' fixes, and a `-Demo` mode; a read-only Secure Score planner; and a method for mapping a threat advisory to controls, checks and fixes.
+- Added five diagrams in `docs/diagrams/` explaining the remediation ladder, the fix loop, the rule register, Secure Score triage and the advisory method.
+- CI: parse and run the new skeletons offline (rule register against the sample state, remediation in Report, WhatIf and Demo apply, Secure Score plan against the sample).
 - Added `tenant-hardening/`: SOP-SEC-TA-01, Tenant Hardening Assessment (concept edition), and `Get-TenantHardeningReport.skeleton.ps1`, a runnable skeleton of the tenant-wide assessment script.
 - CI: parse-check the skeleton and dry-run it with `-SkipAzure -SkipGraph`, so the merge, score and write stages are exercised on every push.
 - README: name the two local-only `Set-`/`New-` calls (`Set-AzContext`, `New-Item`) so the read-only claim is precise.

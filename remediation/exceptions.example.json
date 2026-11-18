@@ -1,0 +1,13 @@
+{
+  "_note": "FICTIONAL. Fixes that would break the workload. Reported as 'Excepted', never applied. Review each by its date.",
+  "exceptions": [
+    {
+      "fixId": "FX-N03",
+      "resource": "*",
+      "reason": "Release uploads and nightly exports write to these accounts from outside the VNet using account keys. Revisit when uploads move to a private agent.",
+      "decidedByRole": "System owner",
+      "recordedInRisk": "RISK-07",
+      "reviewBy": "2027-03-31"
+    }
+  ]
+}

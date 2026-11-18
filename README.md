@@ -12,6 +12,14 @@ I wrote the first version of this during an Azure tenant build to answer one que
 
 **[Tenant Hardening Assessment](tenant-hardening/)** is the tenant-wide companion to this check. It is a read-only assessment of Microsoft 365, Entra ID and Azure together, with a 37-page SOP (SOP-SEC-TA-01) and a runnable skeleton of the script behind it. It reads 17 data sources, merges duplicate findings from Defender and custom checks into one row each, maps every finding to seven frameworks, and writes a hashed evidence set.
 
+**[Rule register check](rule-register/)** grades a tenant against *your own* governance rules, written as JSON rows (one rule, one row), and writes the same kind of hashed evidence. Read-only.
+
+**[Phased remediation kit](remediation/)** closes what the checks find, one phase at a time from safest to riskiest, with before-and-after tests, an exceptions register for fixes that would break the workload, a Secure Score planner, and a method for turning a threat advisory into build changes. **This is the only folder that can change Azure**, and it does nothing without `-Phase` and your confirmation for each change.
+
+| Find | Decide | Fix | Prove |
+|---|---|---|---|
+| `src/` posture check, `tenant-hardening/` | `rule-register/`, `remediation/Get-SecureScorePlan` | `remediation/Invoke-PhasedRemediation` | evidence folders with SHA-256 manifests from every step |
+
 ## Why it exists
 
 Azure Policy and Defender for Cloud score a subscription against benchmarks, but their numbers mix two different things: **guardrails you enforce** (deny, modify) and **benchmarks you audit against**. A low benchmark score can hide one real drift problem under dozens of expected findings. This tool separates the two, checks the settings that matter most in a hardened build, and turns the result into evidence instead of a screenshot.
@@ -95,7 +103,7 @@ evidence/posture-20261019-144151Z/
 
 ## Design choices
 
-- **Read-only by construction.** No `Set-`, `New-`, `Remove-` or `Update-` calls on Azure. The only two exceptions by name are local: `Set-AzContext` selects the subscription in the current PowerShell session, and `New-Item` creates the evidence folder on disk. Neither sends a write to Azure. Safe to hand to an auditor with Reader.
+- **Read-only by construction.** (The check in `src/`, the tenant hardening assessment and the rule register. The remediation kit is the deliberate exception, and is opt-in.) No `Set-`, `New-`, `Remove-` or `Update-` calls on Azure. The only two exceptions by name are local: `Set-AzContext` selects the subscription in the current PowerShell session, and `New-Item` creates the evidence folder on disk. Neither sends a write to Azure. Safe to hand to an auditor with Reader.
 - **One failure never stops the run.** Each check is wrapped on its own; a permission gap becomes a WARN line for that check.
 - **Tolerant of Az module drift.** Properties are read through `Get-PropValue`, which tries several names and returns `$null` instead of throwing.
 - **Evidence, not screenshots.** The manifest hashes let a reviewer confirm the report was not edited after the run.
@@ -110,7 +118,11 @@ tests/PostureCheck.Helpers.Tests.ps1 Pester 5 tests for every helper
 docs/checks.md                       each check, why it matters, control mapping
 examples/                            report from a fictional subscription
 tenant-hardening/                    tenant-wide assessment: SOP-SEC-TA-01 and script skeleton
-.github/workflows/ci.yml             PSScriptAnalyzer + Pester on every push
+rule-register/                       grade the tenant against your own rules (skeleton)
+remediation/                         phased fixes, exceptions, Secure Score plan, advisory method (skeleton)
+tests/RuleRegister.Tests.ps1         Pester 5 tests for the rule register grader
+docs/diagrams/                       the diagrams used in these READMEs
+.github/workflows/ci.yml             PSScriptAnalyzer + Pester + skeleton dry runs on every push
 ```
 
 ## Limits
